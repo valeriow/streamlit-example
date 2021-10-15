@@ -7,17 +7,17 @@ import streamlit as st
 
 
 df = pd.read_csv("base_nit2.csv")
-
+features = ['transaction_sale','features_suite','features_bedroom','total_area','features_garage','features_bathroom','sqrmeter_price_area_sale','harvesine_distance']
 
 sel_amostra = st.selectbox(
     'Amostra',
      df.index.values)
 
-'You selected: ', sel_amostra
+'Selecionado: ', sel_amostra, df[features].iloc[sel_amostra]
 
 #df
 
-df2 = df[['features_suite','features_bedroom','total_area','features_garage','features_bathroom','sqrmeter_price_area_sale','harvesine_distance']]
+df2 = df[features]
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler()
 scaler.fit(df2.values)
@@ -42,4 +42,6 @@ df3 = df.iloc[selec]
 
  O primeiro da lista é a amostra selecionada
 """
-df3[['features_suite','features_bedroom','total_area','features_garage','features_bathroom','sqrmeter_price_area_sale','harvesine_distance']]
+df3[['transaction_sale','features_suite','features_bedroom','total_area','features_garage','features_bathroom','sqrmeter_price_area_sale','harvesine_distance', 'original_address_neighborhood','state_name','city_raw']]
+
+       
