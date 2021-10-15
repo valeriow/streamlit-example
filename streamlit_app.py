@@ -1,38 +1,45 @@
 from collections import namedtuple
-import altair as alt
 import math
 import pandas as pd
 import streamlit as st
 
+
+
+
+df = pd.read_csv("base_nit2.csv")
+
+
+sel_amostra = st.selectbox(
+    'Amostra',
+     df.index.values)
+
+'You selected: ', sel_amostra
+
+#df
+
+df2 = df[['features_suite','features_bedroom','total_area','features_garage','features_bathroom','sqrmeter_price_area_sale','harvesine_distance']]
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+scaler.fit(df2.values)
+X = scaler.transform(df2.values)
+
+from sklearn.metrics import pairwise_distances
+dist = pairwise_distances(X, metric='euclidean')
+
+ordenada = list(enumerate(list( dist[sel_amostra] )))
+ordenada.sort(key=lambda tup: tup[1]) 
+
+
+selec = []
+for i in ordenada[0:10]:
+  #print(pd.DataFrame(df.iloc[i[0]]))
+  selec.append(i[0])
+
+  
+df3 = df.iloc[selec]
 """
-# Welcome to Streamlit!
+ # Semelhantes (top 10)
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:
-
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
-
-In the meantime, below is an example of what you can do with just a few lines of code:
+ O primeiro da lista é a amostra selecionada
 """
-
-
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
-
-    Point = namedtuple('Point', 'x y')
-    data = []
-
-    points_per_turn = total_points / num_turns
-
-    for curr_point_num in range(total_points):
-        curr_turn, i = divmod(curr_point_num, points_per_turn)
-        angle = (curr_turn + 1) * 2 * math.pi * i / points_per_turn
-        radius = curr_point_num / total_points
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        data.append(Point(x, y))
-
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+df3[['features_suite','features_bedroom','total_area','features_garage','features_bathroom','sqrmeter_price_area_sale','harvesine_distance']]
